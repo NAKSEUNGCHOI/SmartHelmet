@@ -13,6 +13,7 @@
 ## Authors
 
 - Nakseung Choi
+- Please check out the project website: https://ece542team5.com/
 - Please check out my Linkedin: https://www.linkedin.com/in/nakseung-choi-090a1b69/
 
 ## Release Notes
