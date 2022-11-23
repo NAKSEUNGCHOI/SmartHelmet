@@ -8,7 +8,7 @@
 
 * Traumatic brain injury (TBI) and concussions are common among two wheeler riders. As per the federal government data, in 2019 the number of deaths on motorcycles was nearly 29 times that of car. As per data from Insurance Institute for Highway Safety about 2% of the two wheeler vehicles crash deaths are bicyclists. Helmets are the key when it comes to injury prevention. With wearable devices becoming smarter with technology, we aim to design a smart helmet by incorporating features that would help track the number and type of impacts on the helmet. It would calculate the duration of usage and impact on the helmet and notify the user when it’s time to replace it. We will also include GPS to send navigation data to the user. There will also be an alert system to send alerts in case of emergencies or accidents. The user can control these features using a smartphone.
 
-* I'm working on the BLE app development using Android studio (Java.) 
+* I'm working on the BLE app development using Android studio (Java) and interface it with the MCU. 
 
 ## Authors
 
