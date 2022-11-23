@@ -1,4 +1,4 @@
-# Project Smart Helmet (Advanced Embedded System Design)
+# Smart Helmet Project (Advanced Embedded System Design)
 
 * University of Washington Fall 2022 
 * Prof. Shwetak Patel
