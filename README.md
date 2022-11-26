@@ -16,7 +16,7 @@
 - Please check out the project website: https://ece542team5.com/
 - Please check out my Linkedin: https://www.linkedin.com/in/nakseung-choi-090a1b69/
 
-## Release Notes
+## Project Notes
 
 * <pre> Working on getting current location using Google Fusedlocation API                    11-26-2022</pre>
 * <pre> Dialing an emergency contact & sending sms feature are added                          11-25-2022</pre>
