@@ -3,6 +3,7 @@
 * University of Washington Fall 2022 
 * Prof. Shwetak Patel
 * Nakseung Choi | graduate research assistant @ CS UW 
+* Fast BLE app development + interface with MCU (ESP32).
 
 ## Description
 
