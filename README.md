@@ -27,3 +27,5 @@
 * <pre> Project Started.                                                                      09-27-2022</pre>
 
 ## License
+
+@ Nakseung Choi
