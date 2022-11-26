@@ -64,21 +64,13 @@ void setup(void) {
  
 void loop(void) {
   get_force_readings(&forces);
-  // impact_analysis(&forces);
+  impact_analysis(&forces);
    // notify changed value
     if (deviceConnected) {
         value[0] = forces.force1;
         value[1] = forces.force2;
         value[2] = forces.force3;
         value[3] = forces.force4;
-        Serial.print("Value[0]: ");
-        Serial.println(value[0]);
-        Serial.print("Value[1]: ");
-        Serial.println(value[1]);
-        Serial.print("Value[2]: ");
-        Serial.println(value[2]);
-        Serial.print("Value[3]: ");
-        Serial.println(value[3]);
         pCharacteristic->setValue(value, 4);
         pCharacteristic->notify();
         

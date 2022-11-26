@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "150053049889",
+    "project_id": "smart-helmet-cd30a",
+    "fireebase_url": "https://smart-helmet-cd30a-default-rtdb.firebaseio.com",
+    "storage_bucket": "smart-helmet-cd30a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150053049889:android:f0b09aff7d86b8c7de7560",
+        "android_client_info": {
+          "package_name": "com.example.ble_keyboard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150053049889-94c8p835e5mc9h8isra1rpar8krndo41.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOv-RR1T-4kVr4U7L7sqQ1acetCW7eEtk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150053049889-94c8p835e5mc9h8isra1rpar8krndo41.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
