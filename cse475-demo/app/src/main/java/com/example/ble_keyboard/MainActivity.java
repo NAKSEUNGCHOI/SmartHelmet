@@ -9,6 +9,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -20,6 +24,9 @@ import com.clj.fastble.callback.BleNotifyCallback;
 import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -40,10 +47,13 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     final private int REQUEST_CALL = 1;
     final private int REQUEST_SMS = 2;
     private boolean flag = true;
+    private boolean location_flag = false;
     private AlertDialog.Builder dialogBuilder;
     private BleDeviceAdapter bleDeviceAdapter;
     private BleDevice activeBleDevice;
@@ -61,7 +72,13 @@ public class MainActivity extends AppCompatActivity {
 
     private Button signOutBtn;
 
+    public double latitude = 0, longitude = 0;
+    public String myAddress = "";
+
     FirebaseAuth mAuth;
+
+    FusedLocationProviderClient fusedLocationProviderClient;
+    LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().hide();
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         /**
          * @Note:
@@ -145,10 +163,11 @@ public class MainActivity extends AppCompatActivity {
      * This function is used to sign out from Google acct.
      */
     void signOut(){
+        LoginManager.getInstance().logOut();
+        mAuth.signOut();
         Intent i = new Intent(MainActivity.this, loginActivity.class);
         startActivity(i);
         finish();
-        mAuth.signOut();
     }
 
     @Override
@@ -235,7 +254,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 activeBleDevice = bleDevice;
+                Intent intent = new Intent(MainActivity.this, SubActivity.class);
                 FloatingActionButton fab2 = findViewById(R.id.fab2);
+                fab2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(intent);
+                    }
+                });
 
                 Toast.makeText(MainActivity.this, "Connected.", Toast.LENGTH_SHORT).show();
 
@@ -267,7 +293,6 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-//                                        System.out.println(data.length);
                                         for(int i = 0; i < data.length; i++) {
                                             if(i == 0){
                                                 front_data = data[i];
@@ -286,19 +311,18 @@ public class MainActivity extends AppCompatActivity {
                                             }else if(i == 7){
                                                 right_damage = data[i];
                                             }
-//                                            System.out.println(i + ". " + data[i]);
                                         }
-//                                        if(front_data > 64 || back_data > 100 || left_data > 100 || right_data > 100){
-////                                            flag = true;
-//                                              durability += 10;
-//                                              Integer.toString(durability);
-//                                            sendSMS();
-//                                            makePhoneCall();
-//                                        }else{
-//                                            flag = false;
-//                                        }
-
-//                                        System.out.println("front is " + front_data + " back is " + back_data + " left is " + left_data + " right is " + right_data);
+                                        /**
+                                         * @Note:
+                                         * Dial an emergency contact & send sms with location info to the contact.
+                                         */
+                                        if(front_data > 64 || back_data > 100 || left_data > 100 || right_data > 100){
+                                            durability += 10;
+                                            sendSMS();
+//                                          makePhoneCall();
+                                        }else{
+                                            flag = false;
+                                        }
 
                                         String id = Long.toString(System.currentTimeMillis());
                                         String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
@@ -313,25 +337,16 @@ public class MainActivity extends AppCompatActivity {
                                         database.child("inputs").child(id).child("right_count").setValue(right_damage);
 
                                         // send data to SubActivity.
-                                        Intent intent = new Intent(MainActivity.this, SubActivity.class);
                                         intent.putExtra("progressText", Integer.toString(durability));
                                         intent.putExtra("front", Integer.toString(front_data));
                                         intent.putExtra("back", Integer.toString(back_data));
                                         intent.putExtra("left", Integer.toString(left_data));
                                         intent.putExtra("right", Integer.toString(right_data));
-                                        intent.putExtra("front_damage", front_damage);
-                                        intent.putExtra("back_damage", back_damage);
-                                        intent.putExtra("left_damage", left_damage);
-                                        intent.putExtra("right_damage", right_damage);
+//                                        intent.putExtra("front_damage", front_damage);
+//                                        intent.putExtra("back_damage", back_damage);
+//                                        intent.putExtra("left_damage", left_damage);
+//                                        intent.putExtra("right_damage", right_damage);
 
-                                        fab2.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                startActivity(intent);
-                                            }
-                                        });
-                                        //decoding
-                                        // 100 200
                                     }
 
 
@@ -399,19 +414,59 @@ public class MainActivity extends AppCompatActivity {
      *              this function triggers to send a sms to an emergency contact set by the user.
      */
     private void sendSMS(){
-        String message = "Emergency! Please contact 911 for Nakseung Choi.";
+        getLastLocation();
+        String uri = "https://maps.google.com/?daddr=" + latitude + "," + longitude;
+        String message = "Emergency Alert! Please help Nakseung Choi. Location: " + uri;
+        System.out.println("uri: " + uri);
+        System.out.println("Kristal: " + Uri.parse(uri));
         String number = "6308546647";
         if(number.trim().length() > 0){
             if(ContextCompat.checkSelfPermission(MainActivity.this,
                     Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.SEND_SMS}, REQUEST_CALL);
-            }else if(flag){
+            }else if(flag && latitude > 0){
+                System.out.println("gggggggggggggggggggggggggggggggggggggggg: " + message);
+                flag = false;
                 SmsManager mySmsManager = SmsManager.getDefault();
                 mySmsManager.sendTextMessage(number, null, message, null, null);
                 Toast.makeText(MainActivity.this, "Text Message Sent.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private boolean getLastLocation(){
+
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_PERMISSION_LOCATION);
+        }else{
+            fusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if(location != null){
+                                Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                                List<Address> addresses = null;
+                                try{
+                                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+//                                    System.out.println(addresses.get(0).getLatitude()
+//                                            + "," + addresses.get(0).getLongitude());
+                                    latitude = addresses.get(0).getLatitude();
+                                    longitude = addresses.get(0).getLongitude();
+//                                            + ": " + addresses.get(0).getAddressLine(0) + " "
+//                                            + addresses.get(0).getLocality() + ", "
+//                                            + addresses.get(0).getCountryName();
+                                }catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -484,10 +539,10 @@ public class MainActivity extends AppCompatActivity {
     private void onPermissionGranted(String permission) {
         switch (permission) {
             case Manifest.permission.ACCESS_FINE_LOCATION:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkGPSIsOpen()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkGPSIsOpen()) {
                     Toast.makeText(getApplicationContext(), "Permissions are granted", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Permissions are granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Permissions Denied. ", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -495,8 +550,10 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean checkGPSIsOpen() {
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager == null)
+        if (locationManager == null) {
             return false;
-        return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
+        }
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 }

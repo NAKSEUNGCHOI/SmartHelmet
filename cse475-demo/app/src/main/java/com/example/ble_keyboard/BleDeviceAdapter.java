@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 
