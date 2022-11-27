@@ -19,6 +19,8 @@
 
 ## Project Notes
 
+* <pre> Debugging Facebook Login && Major features needed for the project are all added.      11-27-2022</pre>
+* <pre> Send a sms with a google maps link for current location done.                         11-27-2022</pre>
 * <pre> Working on getting current location using Google Fusedlocation API                    11-26-2022</pre>
 * <pre> Dialing an emergency contact & sending sms feature are added                          11-25-2022</pre>
 * <pre> UI displays impact level and which side the damage has been taken                     11-22-2022</pre>
