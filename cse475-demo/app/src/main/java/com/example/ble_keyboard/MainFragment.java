@@ -1,3 +1,9 @@
+/**
+ * @author Nakseung Choi
+ * @date 12/1/2022
+ * @description Fragment in main activity
+ * This fragment displays the history of the data in Listview that is saved in Firebase.
+ */
 package com.example.ble_keyboard;
 
 import android.content.Intent;
@@ -32,7 +38,7 @@ public class MainFragment extends Fragment {
     }
 
     /**
-     * @Note: Retrieve data from Firebase and display the history in listview on data change.
+     * @Note: Retrieve data from Firebase and display the history in listview when data changes.
      */
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

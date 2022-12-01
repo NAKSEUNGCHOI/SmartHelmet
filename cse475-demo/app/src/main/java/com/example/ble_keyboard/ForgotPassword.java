@@ -1,3 +1,9 @@
+/**
+ * @author Nakseung Choi
+ * @date 12/1/2022
+ * @description If the users wish to change their password,
+ * this sends an email with a link to the registered email and allows them to change their password.
+ */
 package com.example.ble_keyboard;
 
 import androidx.annotation.NonNull;
@@ -60,7 +66,7 @@ public class ForgotPassword extends AppCompatActivity implements View.OnClickLis
 
     /**
      * @Note:
-     * It sends an email to users and allows them to reset their password.
+     * It sends an email to the user and allows them to reset their password via link.
      */
     private void resetPassword(){
         String email = emailEditText.getText().toString().trim();

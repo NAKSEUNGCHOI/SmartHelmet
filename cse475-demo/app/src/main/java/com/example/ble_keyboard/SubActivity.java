@@ -1,3 +1,9 @@
+/**
+ * @author Nakseung Choi
+ * @date 12/1/2022
+ * @description sub activity.
+ * A simple UI is employed to visualize the helmet overview.
+ */
 package com.example.ble_keyboard;
 
 //import androidx.annotation.NonNull;

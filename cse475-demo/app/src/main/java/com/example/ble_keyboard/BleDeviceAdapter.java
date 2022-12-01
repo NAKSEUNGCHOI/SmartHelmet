@@ -1,3 +1,9 @@
+/**
+ * @author Nakseung Choi
+ * @date 12/1/2022
+ * @description This detects nearby BLE devices and displays the list.
+ */
+
 package com.example.ble_keyboard;
 
 import android.content.Context;
@@ -16,7 +22,7 @@ import java.util.ArrayList;
 
 /**
  * @Note:
- * This function retrieves data from firebase and displays them as listview.
+ * This detects the nearby BLE devices and displays the list.
  */
 public class BleDeviceAdapter extends ArrayAdapter<BleDevice> {
     public BleDeviceAdapter(Context context, @LayoutRes int resource) {

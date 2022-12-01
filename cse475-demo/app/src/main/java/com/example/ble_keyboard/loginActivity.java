@@ -1,3 +1,16 @@
+/**
+ * @author Nakseung Choi
+ * @date 12/1/2022
+ * @description This has all the log in codes.
+ * There are three ways to log into the app:
+ * 1. register an account and log in.
+ * 2. Google log in
+ * 3. Facebook log in.
+ *
+ * One thing to work on is that when the user signs in with a google account,
+ * the emergency contact is missing. Therefore, you have to come up with a way to
+ * make the users register their emergency contact.
+ */
 package com.example.ble_keyboard;
 
 import androidx.annotation.NonNull;
@@ -43,7 +56,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 import java.util.Arrays;
 

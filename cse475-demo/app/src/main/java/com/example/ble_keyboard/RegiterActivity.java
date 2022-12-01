@@ -1,3 +1,9 @@
+/**
+ * @author Nakseung Choi
+ * @date 12/1/2022
+ * @description Register activity
+ * This activity allows a new user to sign up their account in log in activity.
+ */
 package com.example.ble_keyboard;
 
 import androidx.annotation.NonNull;

@@ -1,3 +1,18 @@
+/**
+ * @author Nakseung Choi
+ * @date 12/1/2022
+ * @description Main activity
+ * There are several core features and functions added to this activity:
+ * 1. Scan and connect BLE devices.
+ * 2. Bring the registered emergency contact from firebase and set an emergency contact
+ *    to alert (call & text) in emergency situations.
+ * 3. Give permission to all features such as BLUETOOTH_ADMIN, FINE LOCATION, INTERNET, SMS, and so on.
+ *    (Please check out Android Manifest for details.)
+ * 3. Transfer the data from the MCU to Firebase.
+ * 4. IF the impact level data received from the MCU goes above the threshold,
+ *    dial & text 911 (or emergency contact set by the user.)
+ * 5. Send the data from the MCU to the sub activity for UI.<uses-permission android:name="android.permission.BLUETOOTH" />
+ */
 package com.example.ble_keyboard;
 
 import android.Manifest;
@@ -439,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void makePhoneCall() {
         String number = eContact; //"4259999810";
-        System.out.println("Number set: " + number);
+//        System.out.println("Number set: " + number);
         if(number.trim().length() > 0){
             if(ContextCompat.checkSelfPermission(MainActivity.this,
                     Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
@@ -465,17 +480,17 @@ public class MainActivity extends AppCompatActivity {
         getLastLocation();
         String uri = "https://maps.google.com/?daddr=" + latitude + "," + longitude;
         String message = "Emergency Alert! Please help Nakseung Choi. Location: " + uri;
-        System.out.println("uri: " + uri);
-        System.out.println("Kristal: " + Uri.parse(uri));
+//        System.out.println("uri: " + uri);
+//        System.out.println("Kristal: " + Uri.parse(uri));
         String number = eContact;
-        System.out.println("E-contact set: " + number);
+//        System.out.println("E-contact set: " + number);
         if(number.trim().length() > 0){
             if(ContextCompat.checkSelfPermission(MainActivity.this,
                     Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.SEND_SMS}, REQUEST_CALL);
             }else if(flag && latitude > 0){
-                System.out.println("gggggggggggggggggggggggggggggggggggggggg: " + message);
+//                System.out.println("gggggggggggggggggggggggggggggggggggggggg: " + message);
                 flag = false;
 //                SmsManager mySmsManager = SmsManager.getDefault();
 //                mySmsManager.sendTextMessage(number, null, message, null, null);

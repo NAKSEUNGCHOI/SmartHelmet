@@ -1,3 +1,8 @@
+/**
+ * @author Nakseung Choi
+ * @date 12/1/2022
+ * @description User class
+ */
 package com.example.ble_keyboard;
 
 public class User {
