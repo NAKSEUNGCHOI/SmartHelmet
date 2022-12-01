@@ -15,7 +15,4 @@ public class User {
         this.emergencyContact = emergencyContact;
     }
 
-
-
-
 }

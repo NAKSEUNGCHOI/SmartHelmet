@@ -25,10 +25,16 @@ import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.common.data.DataBufferSafeParcelable;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -39,6 +45,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.view.View;
 
@@ -55,30 +62,39 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Request codes
     final private int REQUEST_CODE_PERMISSION_LOCATION = 0;
     final private int REQUEST_CALL = 1;
     final private int REQUEST_SMS = 2;
+
+    // flag for testing.
     private boolean flag = true;
-    private boolean location_flag = false;
+
+    // BLE dialog builder
     private AlertDialog.Builder dialogBuilder;
     private BleDeviceAdapter bleDeviceAdapter;
     private BleDevice activeBleDevice;
+
+    // variables employed to transfer to SubActivity to display
     private int front_data = 0, back_data = 0, left_data = 0, right_data = 0;
     private int front_damage = 0, back_damage = 0, left_damage = 0, right_damage = 0;
     private static int durability = 0;
 
+    // signout button
     private Button signOutBtn;
 
-    public double latitude = 0, longitude = 0;
-    public String myAddress = "";
+    // variables used to get location and set the emergency contact;
+    private double latitude = 0, longitude = 0;
+    private String myAddress = "";
+    private String eContact = "";
+
 
     FirebaseAuth mAuth;
-
     FusedLocationProviderClient fusedLocationProviderClient;
-    LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().hide();
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         /**
@@ -103,7 +118,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         bleDeviceAdapter = new BleDeviceAdapter(MainActivity.this, android.R.layout.select_dialog_singlechoice);
-
+        /**
+         * @Note:
+         * Call the emergency contact setting function below.
+         */
+        emergencyContactSetting();
         /**
          * @Note:
          * build dialog for scanning BLE devices.
@@ -156,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 .setReConnectCount(1, 5000)
                 .setConnectOverTime(20000)
                 .setOperateTimeout(5000);
+
     }
 
     /**
@@ -182,6 +202,10 @@ public class MainActivity extends AppCompatActivity {
         BleManager.getInstance().destroy();
     }
 
+    /**
+     * @Note:
+     * Disabled.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -206,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * @Note:
-     * BLE start Scan function.
+     * start Scanning nearby BLE devices.
      */
     private void startScan() {
         BleManager.getInstance().scan(new BleScanCallback() {
@@ -319,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
                                         if(front_data > 64 || back_data > 100 || left_data > 100 || right_data > 100){
                                             durability += 10;
                                             sendSMS();
-//                                          makePhoneCall();
+                                            //makePhoneCall();
                                         }else{
                                             flag = false;
                                         }
@@ -383,7 +407,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     * @Note:
+     * 1. Retrieve the current user's emergency contact from Firebase.
+     * 2. Set up the emergency contact if an accident happens.
+     */
+    private void emergencyContactSetting(){
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+        Toast.makeText(MainActivity.this, "In here1", Toast.LENGTH_SHORT).show();
+        reference.child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getResult().exists()){
+                        DataSnapshot dataSnapshot = task.getResult();
+                        eContact = String.valueOf(dataSnapshot.child("emergencyContact").getValue());
+                        Toast.makeText(MainActivity.this, "e-contact successfully registered.", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(MainActivity.this, "e-contact registration failed.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
     /**
      * @Note:
      * Dial an emergency call.
@@ -391,7 +438,8 @@ public class MainActivity extends AppCompatActivity {
      *              this function triggers to dial an emergency contact set by the user.
      */
     private void makePhoneCall() {
-        String number = "6308546647"; //"4259999810";
+        String number = eContact; //"4259999810";
+        System.out.println("Number set: " + number);
         if(number.trim().length() > 0){
             if(ContextCompat.checkSelfPermission(MainActivity.this,
                     Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
@@ -419,7 +467,8 @@ public class MainActivity extends AppCompatActivity {
         String message = "Emergency Alert! Please help Nakseung Choi. Location: " + uri;
         System.out.println("uri: " + uri);
         System.out.println("Kristal: " + Uri.parse(uri));
-        String number = "6308546647";
+        String number = eContact;
+        System.out.println("E-contact set: " + number);
         if(number.trim().length() > 0){
             if(ContextCompat.checkSelfPermission(MainActivity.this,
                     Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
@@ -428,8 +477,8 @@ public class MainActivity extends AppCompatActivity {
             }else if(flag && latitude > 0){
                 System.out.println("gggggggggggggggggggggggggggggggggggggggg: " + message);
                 flag = false;
-                SmsManager mySmsManager = SmsManager.getDefault();
-                mySmsManager.sendTextMessage(number, null, message, null, null);
+//                SmsManager mySmsManager = SmsManager.getDefault();
+//                mySmsManager.sendTextMessage(number, null, message, null, null);
                 Toast.makeText(MainActivity.this, "Text Message Sent.", Toast.LENGTH_SHORT).show();
             }
         }
