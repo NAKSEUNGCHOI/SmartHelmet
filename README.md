@@ -19,6 +19,7 @@
 
 ## Project Notes
 
+* <pre> Retrieve data from Firebase and set up the emergency contact for the current user.    11-30-2022</pre>
 * <pre> Debugging Facebook Login && Major features needed for the project are all added.      11-27-2022</pre>
 * <pre> Send a sms with a google maps link for current location done.                         11-27-2022</pre>
 * <pre> Working on getting current location using Google Fusedlocation API                    11-26-2022</pre>
