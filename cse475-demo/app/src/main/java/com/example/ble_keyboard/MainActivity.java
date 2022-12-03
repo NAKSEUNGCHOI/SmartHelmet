@@ -24,10 +24,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -60,13 +61,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -79,7 +83,9 @@ import java.util.Locale;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity {
+import org.w3c.dom.Text;
+
+public class MainActivity extends AppCompatActivity{
 
     // Request codes
     final private int REQUEST_CODE_PERMISSION_LOCATION = 0;
@@ -96,17 +102,16 @@ public class MainActivity extends AppCompatActivity {
 
     // variables employed to transfer to SubActivity to display
     private int front_data = 0, back_data = 0, left_data = 0, right_data = 0;
-    private int front_damage = 0, back_damage = 0, left_damage = 0, right_damage = 0;
+//    private int front_damage = 0, back_damage = 0, left_damage = 0, right_damage = 0;
     private static int durability = 0;
 
-    // signout button
+    // sign-out button
     private Button signOutBtn;
 
     // variables used to get location and set the emergency contact;
     private double latitude = 0, longitude = 0;
-    private String myAddress = "";
     private String eContact = "";
-
+    private boolean cancel_sms_Flag = false;
 
     FirebaseAuth mAuth;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -118,6 +123,11 @@ public class MainActivity extends AppCompatActivity {
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().hide();
+
+        /**
+         * @Note:
+         * Get the current location of the user.
+         */
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         /**
@@ -132,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
                 signOut();
             }
         });
-        bleDeviceAdapter = new BleDeviceAdapter(MainActivity.this, android.R.layout.select_dialog_singlechoice);
         /**
          * @Note:
          * Call the emergency contact setting function below.
@@ -140,8 +149,9 @@ public class MainActivity extends AppCompatActivity {
         emergencyContactSetting();
         /**
          * @Note:
-         * build dialog for scanning BLE devices.
+         * build dialog for scanning and connecting BLE devices.
          */
+        bleDeviceAdapter = new BleDeviceAdapter(MainActivity.this, android.R.layout.select_dialog_singlechoice);
         dialogBuilder = new AlertDialog.Builder(MainActivity.this);
         dialogBuilder.setIcon(R.drawable.huskylogo);
         dialogBuilder.setTitle("Select a BLE device");
@@ -299,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         startActivity(intent);
+                        finish();
                     }
                 });
 
@@ -332,33 +343,25 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                                        for(int i = 0; i < data.length; i++) {
-                                            if(i == 0){
-                                                front_data = data[i];
-                                            }else if(i == 1){
-                                                back_data = data[i];
-                                            }else if(i == 2){
-                                                left_data = data[i];
-                                            }else if(i == 3){
-                                                right_data = data[i];
-                                            }else if(i == 4){
-                                                front_damage =data[i];
-                                            }else if(i == 5){
-                                                back_damage = data[i];
-                                            }else if(i == 6){
-                                                left_damage = data[i];
-                                            }else if(i == 7){
-                                                right_damage = data[i];
-                                            }
-                                        }
+
+                                        /**
+                                         * stores data from MCU into variables for clarification.
+                                         * threshold in MCU goes above this threshold
+                                         * send the whole data and do the calculation here in the app?
+                                         */
+                                        left_data = data[0];
+                                        right_data = data[1];
+                                        front_data = data[2];
+                                        back_data = data[3];
+
                                         /**
                                          * @Note:
                                          * Dial an emergency contact & send sms with location info to the contact.
                                          */
-                                        if(front_data > 64 || back_data > 100 || left_data > 100 || right_data > 100){
+                                        if(flag && (front_data > 64 || back_data > 100 || left_data > 100 || right_data > 100)){
                                             durability += 10;
-                                            sendSMS();
-                                            //makePhoneCall();
+                                            openDialog();
+                                            flag = false;
                                         }else{
                                             flag = false;
                                         }
@@ -370,10 +373,6 @@ public class MainActivity extends AppCompatActivity {
                                         database.child("inputs").child(id).child("back").setValue(back_data);
                                         database.child("inputs").child(id).child("left").setValue(left_data);
                                         database.child("inputs").child(id).child("right").setValue(right_data);
-                                        database.child("inputs").child(id).child("front_count").setValue(front_damage);
-                                        database.child("inputs").child(id).child("back_count").setValue(back_damage);
-                                        database.child("inputs").child(id).child("left_count").setValue(left_damage);
-                                        database.child("inputs").child(id).child("right_count").setValue(right_damage);
 
                                         // send data to SubActivity.
                                         intent.putExtra("progressText", Integer.toString(durability));
@@ -381,10 +380,6 @@ public class MainActivity extends AppCompatActivity {
                                         intent.putExtra("back", Integer.toString(back_data));
                                         intent.putExtra("left", Integer.toString(left_data));
                                         intent.putExtra("right", Integer.toString(right_data));
-//                                        intent.putExtra("front_damage", front_damage);
-//                                        intent.putExtra("back_damage", back_damage);
-//                                        intent.putExtra("left_damage", left_damage);
-//                                        intent.putExtra("right_damage", right_damage);
 
                                     }
 
@@ -422,6 +417,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    public void openDialog(){
+        getLastLocation();
+        cancel_sms_Flag = false;
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Emergency Alert ON!")
+                .setMessage("start time")
+                .setNegativeButton("Deactivate alert", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        cancel_sms_Flag = true;
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+        TextView message = alert.findViewById(android.R.id.message);
+        TextView title = alert.findViewById(android.R.id.title);
+        new CountDownTimer(5000, 100){
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                alert.setMessage(String.format("%02d", millisUntilFinished / 1000));
+                message.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                message.setTextSize(50);
+                if((millisUntilFinished / 1000) < 11){
+                    message.setTextColor(getColor(R.color.colorRed));
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                if(!cancel_sms_Flag) {
+                    alert.dismiss();
+                    sendSMS();
+                    //makePhoneCall();
+                }
+            }
+        }.start();
+
+    }
+
     /**
      * @Note:
      * 1. Retrieve the current user's emergency contact from Firebase.
@@ -430,7 +466,6 @@ public class MainActivity extends AppCompatActivity {
     private void emergencyContactSetting(){
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-        Toast.makeText(MainActivity.this, "In here1", Toast.LENGTH_SHORT).show();
         reference.child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -454,7 +489,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void makePhoneCall() {
         String number = eContact; //"4259999810";
-//        System.out.println("Number set: " + number);
         if(number.trim().length() > 0){
             if(ContextCompat.checkSelfPermission(MainActivity.this,
                     Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
@@ -477,20 +511,16 @@ public class MainActivity extends AppCompatActivity {
      *              this function triggers to send a sms to an emergency contact set by the user.
      */
     private void sendSMS(){
-        getLastLocation();
         String uri = "https://maps.google.com/?daddr=" + latitude + "," + longitude;
         String message = "Emergency Alert! Please help Nakseung Choi. Location: " + uri;
-//        System.out.println("uri: " + uri);
-//        System.out.println("Kristal: " + Uri.parse(uri));
         String number = eContact;
-//        System.out.println("E-contact set: " + number);
+        System.out.println(uri);
         if(number.trim().length() > 0){
             if(ContextCompat.checkSelfPermission(MainActivity.this,
                     Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.SEND_SMS}, REQUEST_CALL);
-            }else if(flag && latitude > 0){
-//                System.out.println("gggggggggggggggggggggggggggggggggggggggg: " + message);
+            }else if(latitude > 0){
                 flag = false;
 //                SmsManager mySmsManager = SmsManager.getDefault();
 //                mySmsManager.sendTextMessage(number, null, message, null, null);
@@ -604,9 +634,9 @@ public class MainActivity extends AppCompatActivity {
         switch (permission) {
             case Manifest.permission.ACCESS_FINE_LOCATION:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkGPSIsOpen()) {
-                    Toast.makeText(getApplicationContext(), "Permissions are granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Location permission granted", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Permissions Denied. ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Location permission Denied. ", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

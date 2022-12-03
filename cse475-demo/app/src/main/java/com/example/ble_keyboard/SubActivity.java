@@ -45,7 +45,7 @@ public class SubActivity extends AppCompatActivity {
     private TextView progressText;
     private TextView left, right, front, back;
     private TextView text_message;
-//    private TextView front_damage, back_damage, left_damage, right_damage;
+    private int x, y;
     private Intent intent;
     private Bundle bundle;
     int i = 100;
@@ -115,6 +115,8 @@ public class SubActivity extends AppCompatActivity {
                 back.setText("Back: " + Integer.parseInt(back_data));
                 left.setText("Left: " + Integer.parseInt(left_data));
                 right.setText("Right: " + Integer.parseInt(right_data));
+                x = Integer.parseInt(right_data) - Integer.parseInt(left_data);
+                y = Integer.parseInt(front_data) - Integer.parseInt(back_data);
                 /**
                  * @Task:
                  * You need to do this.
@@ -153,7 +155,7 @@ public class SubActivity extends AppCompatActivity {
          *                    at which side the damage has been applied to.
          */
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
-        series.appendData(new DataPoint(0, 0),true,90);
+        series.appendData(new DataPoint(x, y),true,90);
 
         series.setColor(Color.rgb(100,0,0)); //встановити колір кривої
         series.setDrawDataPoints(true);
