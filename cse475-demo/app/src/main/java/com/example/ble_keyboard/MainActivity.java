@@ -1,6 +1,5 @@
 /**
  * @author Nakseung Choi
- * @author Jonathan Do
  * @date 12/1/2022
  * @description Main activity
  * There are several core features and functions added to this activity:

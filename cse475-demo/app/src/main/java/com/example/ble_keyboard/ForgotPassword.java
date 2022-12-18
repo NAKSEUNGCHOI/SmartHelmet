@@ -1,6 +1,5 @@
 /**
  * @author Nakseung Choi
- * @author Jonathan Do
  * @date 12/1/2022
  * @description If the users wish to change their password,
  * this sends an email with a link to the registered email and allows them to change their password.

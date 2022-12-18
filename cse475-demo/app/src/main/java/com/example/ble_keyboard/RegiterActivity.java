@@ -1,6 +1,5 @@
 /**
  * @author Nakseung Choi
- * @author Jonathan Do
  * @date 12/1/2022
  * @description Register activity
  * This activity allows a new user to sign up their account in log in activity.

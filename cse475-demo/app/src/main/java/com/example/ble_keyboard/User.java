@@ -1,6 +1,5 @@
 /**
  * @author Nakseung Choi
- * @author Jonathan Do
  * @date 12/1/2022
  * @description User class
  */

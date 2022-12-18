@@ -1,6 +1,5 @@
 /**
  * @author Nakseung Choi
- * @author Jonathan Do
  * @date 12/1/2022
  * @description Fragment in main activity
  * This fragment displays the history of the data in Listview that is saved in Firebase.
