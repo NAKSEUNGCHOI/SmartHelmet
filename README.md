@@ -20,6 +20,7 @@
 
 ## Project Notes
 
+* <pre> Project Ended (final commit)                                                          12-13-2022</pre>
 * <pre> 30s coundown alert dialog feature added.                                              12-03-2022</pre>
 * <pre> Documentation for all activities.                                                     12-01-2022</pre>
 * <pre> Retrieve data from Firebase and set up the emergency contact for the current user.    11-30-2022</pre>

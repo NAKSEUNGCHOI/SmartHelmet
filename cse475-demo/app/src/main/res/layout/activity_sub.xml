@@ -11,14 +11,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp">
+        android:layout_height="60dp">
 
 
         <TextView
             android:id="@+id/subBanner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:fontFamily="sans-serif-medium"
             android:shadowColor="#000000"
             android:shadowDx="10"
@@ -36,13 +35,247 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="350dp">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha=".40"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/my_project__2_" />
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/left_orange"-->
+        <!--            android:layout_width="87dp"-->
+        <!--            android:layout_height="77dp"-->
+        <!--            android:alpha=".40"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="@+id/helmet_right"-->
+        <!--            app:layout_constraintHorizontal_bias="0.225"-->
+        <!--            app:layout_constraintStart_toStartOf="@+id/imageView"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:srcCompat="@drawable/orangedot" />-->
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/right_orange"-->
+        <!--            android:layout_width="87dp"-->
+        <!--            android:layout_height="77dp"-->
+        <!--            android:alpha=".40"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="@+id/helmet_right"-->
+        <!--            app:layout_constraintHorizontal_bias="0.785"-->
+        <!--            app:layout_constraintStart_toStartOf="@+id/imageView"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintVertical_bias="0.504"-->
+        <!--            app:srcCompat="@drawable/orangedot" />-->
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/front_orange"-->
+        <!--            android:layout_width="87dp"-->
+        <!--            android:layout_height="77dp"-->
+        <!--            android:alpha=".40"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="@+id/helmet_right"-->
+        <!--            app:layout_constraintStart_toStartOf="@+id/imageView"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintVertical_bias="0.796"-->
+        <!--            app:srcCompat="@drawable/orangedot" />-->
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/back_orange"-->
+        <!--            android:layout_width="87dp"-->
+        <!--            android:layout_height="77dp"-->
+        <!--            android:alpha=".40"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="@+id/helmet_right"-->
+        <!--            app:layout_constraintStart_toStartOf="@+id/imageView"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintVertical_bias="0.208"-->
+        <!--            app:srcCompat="@drawable/orangedot" />-->
+
+        <TextView
+            android:id="@+id/helmet_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:text="Right: 0"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintHorizontal_bias="0.865"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:layout_constraintVertical_bias="0.501" />
+
+        <TextView
+            android:id="@+id/helmet_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:text="Back: 0"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:layout_constraintVertical_bias="0.951" />
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graph"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/helmet_front"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:text="Front: 0"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:layout_constraintVertical_bias="0.048" />
+
+        <TextView
+            android:id="@+id/helmet_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:text="Left: 0"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintHorizontal_bias="0.145"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:layout_constraintVertical_bias="0.501" />
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/front_damage"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="TextView"-->
+        <!--            android:textColor="#FFFFFF"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/imageView"-->
+        <!--            app:layout_constraintHorizontal_bias="0.153"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintVertical_bias="0.094" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/back_damage"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="TextView"-->
+        <!--            android:textColor="#FFFFFF"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/imageView"-->
+        <!--            app:layout_constraintHorizontal_bias="0.153"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintVertical_bias="0.324" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/left_damage"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="TextView"-->
+        <!--            android:textColor="#FFFFFF"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/imageView"-->
+        <!--            app:layout_constraintHorizontal_bias="0.153"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintVertical_bias="0.675" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/right_damage"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="TextView"-->
+        <!--            android:textColor="#FFFFFF"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/helmet_left"-->
+        <!--            app:layout_constraintHorizontal_bias="0.153"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintVertical_bias="0.908" />-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif-medium"
+            android:text="Last Impact: none"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/accelerometer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Number of G's 0"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:shadowColor="#000000"
+        android:shadowDx="10"
+        android:shadowDy="10"
+        android:shadowRadius="0.7"
+        android:text="Durability"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#000000"
+        android:textColorHint="#000000"
+        android:textColorLink="#000000"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <RelativeLayout
         android:id="@+id/progress_layout"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_margin="50dp">
+        android:layout_width="158dp"
+        android:layout_height="161dp"
+        android:layout_margin="40dp">
 
         <ProgressBar
             android:id="@+id/progress_circular"
@@ -72,215 +305,5 @@
             android:textStyle="bold" />
 
     </RelativeLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="293dp">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="269dp"
-            android:layout_height="243dp"
-            android:alpha=".40"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/my_project" />
-
-<!--        <ImageView-->
-<!--            android:id="@+id/left_orange"-->
-<!--            android:layout_width="87dp"-->
-<!--            android:layout_height="77dp"-->
-<!--            android:alpha=".40"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="@+id/helmet_right"-->
-<!--            app:layout_constraintHorizontal_bias="0.225"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/imageView"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:srcCompat="@drawable/orangedot" />-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/right_orange"-->
-<!--            android:layout_width="87dp"-->
-<!--            android:layout_height="77dp"-->
-<!--            android:alpha=".40"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="@+id/helmet_right"-->
-<!--            app:layout_constraintHorizontal_bias="0.785"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/imageView"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.504"-->
-<!--            app:srcCompat="@drawable/orangedot" />-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/front_orange"-->
-<!--            android:layout_width="87dp"-->
-<!--            android:layout_height="77dp"-->
-<!--            android:alpha=".40"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="@+id/helmet_right"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/imageView"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.796"-->
-<!--            app:srcCompat="@drawable/orangedot" />-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/back_orange"-->
-<!--            android:layout_width="87dp"-->
-<!--            android:layout_height="77dp"-->
-<!--            android:alpha=".40"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="@+id/helmet_right"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/imageView"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.208"-->
-<!--            app:srcCompat="@drawable/orangedot" />-->
-
-        <TextView
-            android:id="@+id/helmet_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
-            android:text="Right"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView"
-            app:layout_constraintVertical_bias="0.497" />
-
-        <TextView
-            android:id="@+id/helmet_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
-            android:text="Back"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintEnd_toEndOf="@+id/helmet_right"
-            app:layout_constraintHorizontal_bias="0.537"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <com.jjoe64.graphview.GraphView
-            android:id="@+id/graph"
-            android:layout_width="243dp"
-            android:layout_height="202dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.593" />
-
-        <TextView
-            android:id="@+id/helmet_front"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="84dp"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
-            android:text="Front"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintEnd_toEndOf="@+id/helmet_right"
-            app:layout_constraintHorizontal_bias="0.776"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/helmet_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
-            android:text="Left"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView"
-            app:layout_constraintVertical_bias="0.497" />
-
-        <!--        <TextView-->
-<!--            android:id="@+id/front_damage"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="TextView"-->
-<!--            android:textColor="#FFFFFF"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/imageView"-->
-<!--            app:layout_constraintHorizontal_bias="0.153"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.094" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/back_damage"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="TextView"-->
-<!--            android:textColor="#FFFFFF"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/imageView"-->
-<!--            app:layout_constraintHorizontal_bias="0.153"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.324" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/left_damage"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="TextView"-->
-<!--            android:textColor="#FFFFFF"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/imageView"-->
-<!--            app:layout_constraintHorizontal_bias="0.153"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.675" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/right_damage"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="TextView"-->
-<!--            android:textColor="#FFFFFF"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/helmet_left"-->
-<!--            app:layout_constraintHorizontal_bias="0.153"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.908" />-->
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/text_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
-            android:text="TextView"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp" />
-    </LinearLayout>
 
 </LinearLayout>

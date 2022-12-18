@@ -1,5 +1,6 @@
 /**
  * @author Nakseung Choi
+ * @author Jonathan Do
  * @date 12/1/2022
  * @description Fragment in main activity
  * This fragment displays the history of the data in Listview that is saved in Firebase.
@@ -21,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,7 +44,7 @@ public class MainFragment extends Fragment {
      */
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         ListView listView = (ListView) view.findViewById(R.id.list_inputs);
         ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
         listView.setAdapter(adapter);
@@ -56,10 +58,16 @@ public class MainFragment extends Fragment {
                 adapter.clear();
                 for (DataSnapshot ds: dataSnapshot.getChildren()) {
                     Log.d("New Data", ds.getKey() + "," + ds.getChildrenCount() + "," + ds.child("time").getValue() + ", " +  ds.child("value").getValue());
-                    for (DataSnapshot ds1: ds.getChildren()) {
-                        Log.d("New Data", ds1.getKey() + "," + ds1.getChildrenCount() + "," + ds1.child("time").getValue() + ", " +  ds1.child("value").getValue());
-                        adapter.add(ds1.child("front").getValue() + ", " + ds1.child("back").getValue() + ", " +
-                                ds1.child("left").getValue() + ", " + ds1.child("right").getValue() + ", " + ds1.child("time").getValue());
+                    for (DataSnapshot ds1 : ds.getChildren()) {
+                        if(ds1.getKey() == uid){
+                            for (DataSnapshot ds2 : ds1.getChildren()) {
+                                for(DataSnapshot ds3 : ds2.getChildren()) {
+                                    adapter.add(ds3.child("front").getValue() + ", " + ds3.child("back").getValue() + ", " +
+                                            ds3.child("left").getValue() + ", " + ds3.child("right").getValue() +
+                                            ", " + ds3.child("time").getValue());
+                                }
+                            }
+                        }
                     }
                 }
                 adapter.notifyDataSetChanged();

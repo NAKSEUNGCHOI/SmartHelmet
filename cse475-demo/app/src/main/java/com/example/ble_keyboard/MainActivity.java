@@ -1,5 +1,6 @@
 /**
  * @author Nakseung Choi
+ * @author Jonathan Do
  * @date 12/1/2022
  * @description Main activity
  * There are several core features and functions added to this activity:
@@ -64,6 +65,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -77,11 +79,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.firebase.database.ValueEventListener;
+import com.jjoe64.graphview.series.DataPoint;
 
 import org.w3c.dom.Text;
 
@@ -101,9 +106,9 @@ public class MainActivity extends AppCompatActivity{
     private BleDevice activeBleDevice;
 
     // variables employed to transfer to SubActivity to display
-    private int front_data = 0, back_data = 0, left_data = 0, right_data = 0;
+    private int front_data = 0, back_data = 0, left_data = 0, right_data = 0, accelerometer = 0;
+    private int durability = 100;
 //    private int front_damage = 0, back_damage = 0, left_damage = 0, right_damage = 0;
-    private static int durability = 0;
 
     // sign-out button
     private Button signOutBtn;
@@ -112,6 +117,8 @@ public class MainActivity extends AppCompatActivity{
     private double latitude = 0, longitude = 0;
     private String eContact = "";
     private boolean cancel_sms_Flag = false;
+    private String uid = "";
+    private double concuss_factor = 3.1867;
 
     FirebaseAuth mAuth;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -123,7 +130,11 @@ public class MainActivity extends AppCompatActivity{
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().hide();
-
+        /**
+         * @Note:
+         * Get user ID
+         */
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         /**
          * @Note:
          * Get the current location of the user.
@@ -200,6 +211,7 @@ public class MainActivity extends AppCompatActivity{
                 .setReConnectCount(1, 5000)
                 .setConnectOverTime(20000)
                 .setOperateTimeout(5000);
+
 
     }
 
@@ -309,7 +321,6 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onClick(View view) {
                         startActivity(intent);
-                        finish();
                     }
                 });
 
@@ -349,37 +360,48 @@ public class MainActivity extends AppCompatActivity{
                                          * threshold in MCU goes above this threshold
                                          * send the whole data and do the calculation here in the app?
                                          */
-                                        left_data = data[0];
-                                        right_data = data[1];
-                                        front_data = data[2];
-                                        back_data = data[3];
+                                        left_data = data[0] & 0xFF;
+                                        right_data = data[1] & 0xFF;
+                                        front_data = data[2] & 0xFF;
+                                        back_data = data[3] & 0xFF;
+                                        accelerometer = data[4];
+                                        left_data = (int)(left_data * concuss_factor);
+                                        right_data = (int)(right_data * concuss_factor);
+                                        front_data = (int)(front_data * concuss_factor);
+                                        back_data = (int)(back_data * concuss_factor);
 
                                         /**
                                          * @Note:
                                          * Dial an emergency contact & send sms with location info to the contact.
                                          */
-                                        if(flag && (front_data > 64 || back_data > 100 || left_data > 100 || right_data > 100)){
-                                            durability += 10;
+
+                                        if(front_data > 600 || back_data > 600 || left_data > 600 || right_data > 600) {
+                                            durability = 0;
                                             openDialog();
-                                            flag = false;
-                                        }else{
-                                            flag = false;
+                                        }else if (front_data > 400 || back_data > 400 || left_data > 400 || right_data > 400) {
+                                            durability -= 50;
+                                        }else if (front_data > 200 || back_data > 200 || left_data > 200 || right_data > 200) {
+                                            durability -= 30;
+                                        }else if(front_data > 100 || back_data > 100 || left_data > 100 || right_data > 100){
+                                            durability -= 10;
                                         }
+
+                                        if(durability < 0) {
+                                            durability = 0;
+                                        }
+
+
 
                                         String id = Long.toString(System.currentTimeMillis());
                                         String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                                        database.child("inputs").child(id).child("time").setValue(date);
-                                        database.child("inputs").child(id).child("front").setValue(front_data);
-                                        database.child("inputs").child(id).child("back").setValue(back_data);
-                                        database.child("inputs").child(id).child("left").setValue(left_data);
-                                        database.child("inputs").child(id).child("right").setValue(right_data);
-
-                                        // send data to SubActivity.
-                                        intent.putExtra("progressText", Integer.toString(durability));
-                                        intent.putExtra("front", Integer.toString(front_data));
-                                        intent.putExtra("back", Integer.toString(back_data));
-                                        intent.putExtra("left", Integer.toString(left_data));
-                                        intent.putExtra("right", Integer.toString(right_data));
+//                                        database.child("inputs_history").child("durability").setValue(50);
+                                        database.child("Users").child(uid).child("inputs").child(id).child("time").setValue(date);
+                                        database.child("Users").child(uid).child("inputs").child(id).child("front").setValue(front_data);
+                                        database.child("Users").child(uid).child("inputs").child(id).child("back").setValue(back_data);
+                                        database.child("Users").child(uid).child("inputs").child(id).child("left").setValue(left_data);
+                                        database.child("Users").child(uid).child("inputs").child(id).child("right").setValue(right_data);
+                                        database.child("Users").child(uid).child("inputs").child(id).child("accelerometer").setValue(accelerometer);
+                                        database.child("Users").child(uid).child("inputs").child(id).child("durability").setValue(durability);
 
                                     }
 
@@ -417,6 +439,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
     }
+
     public void openDialog(){
         getLastLocation();
         cancel_sms_Flag = false;
@@ -464,7 +487,6 @@ public class MainActivity extends AppCompatActivity{
      * 2. Set up the emergency contact if an accident happens.
      */
     private void emergencyContactSetting(){
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
         reference.child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -494,8 +516,7 @@ public class MainActivity extends AppCompatActivity{
                     Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[] {Manifest.permission.CALL_PHONE}, REQUEST_CALL);
-            }else if(flag){
-                flag = false;
+            }else{
                 String dial = "tel:" + number;
                 startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
             }
@@ -514,16 +535,14 @@ public class MainActivity extends AppCompatActivity{
         String uri = "https://maps.google.com/?daddr=" + latitude + "," + longitude;
         String message = "Emergency Alert! Please help Nakseung Choi. Location: " + uri;
         String number = eContact;
-        System.out.println(uri);
         if(number.trim().length() > 0){
             if(ContextCompat.checkSelfPermission(MainActivity.this,
                     Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.SEND_SMS}, REQUEST_CALL);
             }else if(latitude > 0){
-                flag = false;
-//                SmsManager mySmsManager = SmsManager.getDefault();
-//                mySmsManager.sendTextMessage(number, null, message, null, null);
+                SmsManager mySmsManager = SmsManager.getDefault();
+                mySmsManager.sendTextMessage(number, null, message, null, null);
                 Toast.makeText(MainActivity.this, "Text Message Sent.", Toast.LENGTH_SHORT).show();
             }
         }
